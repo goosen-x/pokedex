@@ -26,6 +26,7 @@ export async function prefetchPokemonList(queryClient: QueryClient) {
       } as PokemonPage;
     },
     initialPageParam: 0,
+    getNextPageParam: (lastPage: PokemonPage) => lastPage.nextOffset,
     pages: 1, // Only prefetch first page
   });
 }
