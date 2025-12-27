@@ -14,9 +14,8 @@ interface PokemonSilhouetteProps {
 export function PokemonSilhouette({
   pokemonId,
   isRevealed,
-  isLoading,
 }: PokemonSilhouetteProps) {
-  if (isLoading || pokemonId === null) {
+  if (pokemonId === null) {
     return (
       <div className="flex h-64 w-64 items-center justify-center">
         <Skeleton className="h-48 w-48 rounded-full" />

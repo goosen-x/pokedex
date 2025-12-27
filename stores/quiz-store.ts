@@ -53,7 +53,11 @@ export const useQuizStore = create<QuizState>()(
       // Actions
       setGeneration: (gen) => set({ generation: gen }),
 
-      setLoading: (loading) => set({ isLoading: loading }),
+      setLoading: (loading) => set({
+        isLoading: loading,
+        // Hide result immediately when starting to load next round
+        ...(loading && { isRevealed: false })
+      }),
 
       startNewRound: (pokemon, options) =>
         set({

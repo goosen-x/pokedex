@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useQuizStore } from '@/stores/quiz-store';
 import { useRandomPokemon } from '@/hooks/use-random-pokemon';
 import { formatPokemonName } from '@/lib/api/pokeapi';
@@ -12,6 +13,7 @@ import { QuizOptions } from './quiz-options';
 import { QuizStats } from './quiz-stats';
 import { QuizResult } from './quiz-result';
 import { GenerationSelect } from './generation-select';
+import { cn } from '@/lib/utils';
 
 export function QuizGame() {
   const {
@@ -55,8 +57,7 @@ export function QuizGame() {
   }, [currentPokemon, isLoading, loadNewRound]);
 
   const handleNextRound = () => {
-    nextRound();
-    loadNewRound();
+    loadNewRound(); // startNewRound will reset state when new pokemon is ready
   };
 
   const handleGenerationChange = (gen: number | null) => {
@@ -94,38 +95,75 @@ export function QuizGame() {
           {/* Title */}
           <h2 className="text-center text-2xl font-bold">Who&apos;s That Pokemon?</h2>
 
-          {/* Silhouette */}
+          {/* Silhouette with crossfade */}
           <div className="flex justify-center">
-            <PokemonSilhouette
-              pokemonId={currentPokemon?.id ?? null}
-              isRevealed={isRevealed}
-              isLoading={isLoading}
-            />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentPokemon?.id ?? 'loading'}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <PokemonSilhouette
+                  pokemonId={currentPokemon?.id ?? null}
+                  isRevealed={isRevealed}
+                />
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          {/* Result */}
-          {isRevealed && currentPokemon && isCorrect !== null && (
-            <QuizResult pokemon={currentPokemon} isCorrect={isCorrect} />
-          )}
+          {/* Result - fixed height to prevent layout shift */}
+          <div className="h-[72px] flex items-center">
+            <AnimatePresence mode="wait">
+              {isRevealed && currentPokemon && isCorrect !== null && (
+                <motion.div
+                  key="result"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="w-full"
+                >
+                  <QuizResult pokemon={currentPokemon} isCorrect={isCorrect} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           <Separator />
 
-          {/* Options */}
-          <QuizOptions
-            options={options}
-            selectedAnswer={selectedAnswer}
-            correctAnswer={correctName}
-            isRevealed={isRevealed}
-            onSelect={selectAnswer}
-            disabled={isLoading || options.length === 0}
-          />
+          {/* Options with crossfade */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={options.join(',')}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+            >
+              <QuizOptions
+                options={options}
+                selectedAnswer={selectedAnswer}
+                correctAnswer={correctName}
+                isRevealed={isRevealed}
+                onSelect={selectAnswer}
+                disabled={isLoading || options.length === 0}
+              />
+            </motion.div>
+          </AnimatePresence>
 
-          {/* Next Button */}
-          {isRevealed && (
-            <Button className="w-full" size="lg" onClick={handleNextRound}>
-              Next Pokemon
-            </Button>
-          )}
+          {/* Next Button - always in DOM to prevent layout shift */}
+          <Button
+            className={cn(
+              'w-full transition-opacity duration-200',
+              isRevealed ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            )}
+            size="lg"
+            onClick={handleNextRound}
+          >
+            Next Pokemon
+          </Button>
         </CardContent>
       </Card>
     </div>
