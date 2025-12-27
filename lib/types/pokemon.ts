@@ -177,6 +177,28 @@ export type PokemonTypeName =
   | 'steel'
   | 'fairy';
 
+// Массив всех типов для итерации
+export const POKEMON_TYPES: PokemonTypeName[] = [
+  'normal',
+  'fire',
+  'water',
+  'grass',
+  'electric',
+  'ice',
+  'fighting',
+  'poison',
+  'ground',
+  'flying',
+  'psychic',
+  'bug',
+  'rock',
+  'ghost',
+  'dragon',
+  'dark',
+  'steel',
+  'fairy',
+];
+
 // Цветовая схема для типов
 export const TYPE_COLORS: Record<PokemonTypeName, string> = {
   normal: 'bg-gray-400',

@@ -1,14 +1,20 @@
 'use client';
 
-import type { PokemonStat } from '@/lib/types/pokemon';
-import { cn } from '@/lib/utils';
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
+import type { PokemonStat, PokemonTypeName } from '@/lib/types/pokemon';
+import { TYPE_COLORS_HEX } from '@/lib/types/pokemon';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
 
 interface StatsChartProps {
   stats: PokemonStat[];
+  type?: PokemonTypeName;
+  compact?: boolean; // Hide stats table, only show chart
 }
-
-// Максимальное значение стата для расчета процента
-const MAX_STAT = 255;
 
 // Названия статов для отображения
 const STAT_NAMES: Record<string, string> = {
@@ -20,61 +26,95 @@ const STAT_NAMES: Record<string, string> = {
   speed: 'Speed',
 };
 
-// Цвета для статов (соответствуют референсу)
-const STAT_COLORS: Record<string, string> = {
-  hp: 'bg-teal-400',
-  attack: 'bg-teal-400',
-  defense: 'bg-teal-400',
-  'special-attack': 'bg-teal-400',
-  'special-defense': 'bg-teal-400',
-  speed: 'bg-teal-400',
-};
-
-export function StatsChart({ stats }: StatsChartProps) {
+export function StatsChart({ stats, type, compact = false }: StatsChartProps) {
   const total = stats.reduce((sum, stat) => sum + stat.base_stat, 0);
+  const typeColor = type ? TYPE_COLORS_HEX[type] : '#3b82f6';
+
+  const chartConfig = {
+    stat: {
+      label: 'Base Stat',
+      color: typeColor,
+    },
+  } satisfies ChartConfig;
+
+  const chartData = stats.map((stat) => ({
+    stat: STAT_NAMES[stat.stat.name] || stat.stat.name,
+    value: stat.base_stat,
+  }));
+
+  if (compact) {
+    return (
+      <ChartContainer
+        config={chartConfig}
+        className="aspect-square w-full max-w-[200px] mx-auto [&_.recharts-surface]:overflow-visible"
+      >
+        <RadarChart data={chartData}>
+          <PolarAngleAxis
+            dataKey="stat"
+            tick={{ fontSize: 10, fill: '#e5e5e5' }}
+          />
+          <PolarGrid gridType="polygon" />
+          <Radar
+            dataKey="value"
+            fill={typeColor}
+            fillOpacity={0.5}
+            stroke={typeColor}
+            strokeWidth={2}
+            dot={{
+              r: 3,
+              fillOpacity: 1,
+              fill: typeColor,
+            }}
+          />
+        </RadarChart>
+      </ChartContainer>
+    );
+  }
 
   return (
-    <div className="space-y-3">
-      {stats.map((stat) => {
-        const percentage = (stat.base_stat / MAX_STAT) * 100;
-        const statName = stat.stat.name;
-
-        return (
-          <div key={statName} className="flex items-center gap-3">
-            {/* Stat name */}
-            <span className="w-16 text-sm text-muted-foreground">
-              {STAT_NAMES[statName] || statName}
-            </span>
-
-            {/* Stat value */}
-            <span className="w-8 text-right text-sm font-semibold">
-              {stat.base_stat}
-            </span>
-
-            {/* Progress bar */}
-            <div className="h-2 flex-1 overflow-hidden rounded-full bg-secondary">
-              <div
-                className={cn(
-                  'h-full rounded-full transition-all duration-500',
-                  stat.base_stat >= 100 ? 'bg-teal-500' :
-                  stat.base_stat >= 50 ? 'bg-teal-400' : 'bg-red-400'
-                )}
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
-          </div>
-        );
-      })}
-
-      {/* Total stats */}
-      <div className="flex items-center gap-3 border-t pt-3">
-        <span className="w-16 text-sm font-semibold">Total</span>
-        <span className="w-8 text-right text-sm font-bold">{total}</span>
-        <div className="h-2 flex-1 overflow-hidden rounded-full bg-secondary">
-          <div
-            className="h-full rounded-full bg-teal-500 transition-all duration-500"
-            style={{ width: `${Math.min((total / 600) * 100, 100)}%` }}
+    <div className="flex flex-col sm:flex-row gap-16 sm:justify-between items-center sm:items-start">
+      <ChartContainer
+        config={chartConfig}
+        className="aspect-square w-full max-w-[260px] flex-shrink-0 [&_.recharts-surface]:overflow-visible"
+      >
+        <RadarChart data={chartData}>
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent hideLabel />}
           />
+          <PolarAngleAxis
+            dataKey="stat"
+            tick={{ fontSize: 12, fill: '#e5e5e5' }}
+          />
+          <PolarGrid gridType="polygon" />
+          <Radar
+            dataKey="value"
+            fill={typeColor}
+            fillOpacity={0.5}
+            stroke={typeColor}
+            strokeWidth={2}
+            dot={{
+              r: 4,
+              fillOpacity: 1,
+              fill: typeColor,
+            }}
+          />
+        </RadarChart>
+      </ChartContainer>
+
+      {/* Stats Table */}
+      <div className="flex-1 space-y-2 text-sm w-full">
+        {stats.map((stat) => (
+          <div key={stat.stat.name} className="flex justify-between">
+            <span className="text-muted-foreground">
+              {STAT_NAMES[stat.stat.name] || stat.stat.name}
+            </span>
+            <span className="font-semibold">{stat.base_stat}</span>
+          </div>
+        ))}
+        <div className="flex justify-between border-t pt-2 mt-2">
+          <span className="font-semibold">Total</span>
+          <span className="font-bold">{total}</span>
         </div>
       </div>
     </div>

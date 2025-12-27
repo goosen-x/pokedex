@@ -1,17 +1,31 @@
-import { TypeFilter } from '@/components/shared/type-filter';
-import { PokemonSearch } from '@/components/pokemon/pokemon-search';
-import { PokemonGrid } from '@/components/pokemon/pokemon-grid';
+import { Navbar } from "@/components/landing/navbar";
+import { Hero } from "@/components/landing/hero";
+import { Features } from "@/components/landing/features";
+import { PokemonShowcase } from "@/components/landing/pokemon-showcase";
+import { FAQ } from "@/components/landing/faq";
+import { Testimonials } from "@/components/landing/testimonials";
+import { CTABanner } from "@/components/landing/cta-banner";
+import { Footer } from "@/components/landing/footer";
 
-export default function Home() {
+export const metadata = {
+  title: "Pokedex | Your Ultimate Pokemon Companion",
+  description:
+    "Explore 1000+ Pokemon, compare stats, learn about evolutions, and test your knowledge with our interactive quiz game.",
+};
+
+export default function LandingPage() {
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <PokemonSearch />
-      </div>
-      <div className="mb-6">
-        <TypeFilter />
-      </div>
-      <PokemonGrid />
-    </div>
+    <>
+      <Navbar />
+      <main className="pt-20">
+        <Hero />
+        <Features />
+        <PokemonShowcase />
+        <FAQ />
+        <Testimonials />
+        <CTABanner />
+        <Footer />
+      </main>
+    </>
   );
 }

@@ -1,12 +1,15 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useQueryClient } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/badge';
 import {
   formatPokemonName,
   getPokemonImageUrl,
+  getPokemon,
+  getPokemonSpecies,
 } from '@/lib/api/pokeapi';
 import { TYPE_BG_COLORS, TYPE_COLORS, type Pokemon, type PokemonTypeName } from '@/lib/types/pokemon';
 import { cn } from '@/lib/utils';
@@ -17,18 +20,34 @@ interface PokemonCardProps {
 
 export const PokemonCard = memo(function PokemonCard({ pokemon }: PokemonCardProps) {
   const primaryType = pokemon.types[0]?.type.name as PokemonTypeName;
+  const queryClient = useQueryClient();
+
+  // Prefetch Pokemon detail data on hover
+  const handleMouseEnter = useCallback(() => {
+    // Prefetch Pokemon details (already have basic data, but species has more)
+    queryClient.prefetchQuery({
+      queryKey: ['pokemon-species', pokemon.id],
+      queryFn: () => getPokemonSpecies(pokemon.id),
+      staleTime: 1000 * 60 * 10, // 10 minutes
+    });
+
+    // Also prefetch evolution chain data for faster detail page loading
+    queryClient.prefetchQuery({
+      queryKey: ['pokemon', pokemon.id],
+      queryFn: () => getPokemon(pokemon.id),
+      staleTime: 1000 * 60 * 10,
+    });
+  }, [pokemon.id, queryClient]);
 
   return (
-    <Link href={`/pokemon/${pokemon.id}`}>
-      <div
-        className={cn(
-          'group relative flex items-center justify-between overflow-hidden rounded-2xl p-4 transition-all hover:shadow-lg hover:scale-[1.02]',
-          TYPE_BG_COLORS[primaryType]
-        )}
-      >
+    <Link href={`/pokemon/${pokemon.id}`} onMouseEnter={handleMouseEnter}>
+      <div className="group relative flex items-center justify-between overflow-hidden rounded-2xl p-4 bg-card border transition-all hover:shadow-lg hover:scale-[1.02]">
+        {/* Color accent stripe */}
+        <div className={cn('absolute left-0 top-0 bottom-0 w-1.5 rounded-l-2xl', TYPE_BG_COLORS[primaryType])} />
+
         {/* Left side: Name and Types */}
-        <div className="z-10 flex flex-col gap-2">
-          <h3 className="text-lg font-bold text-white drop-shadow-sm">
+        <div className="z-10 flex flex-col gap-2 pl-2">
+          <h3 className="text-lg font-bold">
             {formatPokemonName(pokemon.name)}
           </h3>
 
@@ -40,9 +59,8 @@ export const PokemonCard = memo(function PokemonCard({ pokemon }: PokemonCardPro
                 <Badge
                   key={typeName}
                   className={cn(
-                    'rounded-full px-2 py-0.5 text-xs capitalize text-white/90',
-                    TYPE_COLORS[typeName],
-                    'bg-opacity-80'
+                    'rounded-full px-2 py-0.5 text-xs capitalize text-white',
+                    TYPE_COLORS[typeName]
                   )}
                 >
                   {typeName}
@@ -58,14 +76,11 @@ export const PokemonCard = memo(function PokemonCard({ pokemon }: PokemonCardPro
             src={getPokemonImageUrl(pokemon.id)}
             alt={pokemon.name}
             fill
-            className="object-contain drop-shadow-lg transition-transform group-hover:scale-110"
+            className="object-contain transition-transform group-hover:scale-110"
             sizes="80px"
             priority={pokemon.id <= 20}
           />
         </div>
-
-        {/* Decorative pokeball pattern (subtle) */}
-        <div className="pointer-events-none absolute -bottom-4 -right-4 h-24 w-24 rounded-full border-8 border-white/10" />
       </div>
     </Link>
   );

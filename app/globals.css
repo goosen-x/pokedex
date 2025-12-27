@@ -119,7 +119,163 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
   }
+  /* Offset for anchor links (navbar height + padding) */
+  section[id] {
+    scroll-margin-top: 100px;
+  }
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Gradient backgrounds */
+.gradient-primary {
+  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #3b82f6 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #6366f1 100%);
+}
+
+.gradient-sunset {
+  background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%);
+}
+
+/* Glow effects */
+.glow-sm {
+  box-shadow: 0 0 15px -3px var(--glow-color, rgba(124, 58, 237, 0.5));
+}
+
+.glow-md {
+  box-shadow: 0 0 25px -5px var(--glow-color, rgba(124, 58, 237, 0.5));
+}
+
+.glow-lg {
+  box-shadow: 0 0 35px -5px var(--glow-color, rgba(124, 58, 237, 0.5));
+}
+
+/* Type-based glow colors */
+.glow-fire { --glow-color: rgba(249, 115, 22, 0.6); }
+.glow-water { --glow-color: rgba(56, 189, 248, 0.6); }
+.glow-grass { --glow-color: rgba(34, 197, 94, 0.6); }
+.glow-electric { --glow-color: rgba(250, 204, 21, 0.6); }
+.glow-psychic { --glow-color: rgba(236, 72, 153, 0.6); }
+.glow-ice { --glow-color: rgba(103, 232, 249, 0.6); }
+.glow-dragon { --glow-color: rgba(124, 58, 237, 0.6); }
+.glow-dark { --glow-color: rgba(64, 64, 64, 0.6); }
+.glow-fairy { --glow-color: rgba(244, 114, 182, 0.6); }
+.glow-fighting { --glow-color: rgba(185, 28, 28, 0.6); }
+.glow-flying { --glow-color: rgba(139, 92, 246, 0.6); }
+.glow-poison { --glow-color: rgba(168, 85, 247, 0.6); }
+.glow-ground { --glow-color: rgba(202, 138, 4, 0.6); }
+.glow-rock { --glow-color: rgba(161, 98, 7, 0.6); }
+.glow-bug { --glow-color: rgba(132, 204, 22, 0.6); }
+.glow-ghost { --glow-color: rgba(107, 33, 168, 0.6); }
+.glow-steel { --glow-color: rgba(148, 163, 184, 0.6); }
+.glow-normal { --glow-color: rgba(163, 163, 163, 0.6); }
+
+/* Shimmer animation for loading states */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse glow animation */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px -5px var(--glow-color, rgba(124, 58, 237, 0.5)); }
+  50% { box-shadow: 0 0 30px -5px var(--glow-color, rgba(124, 58, 237, 0.7)); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Marquee animations */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--duration) linear infinite;
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration) linear infinite;
 }

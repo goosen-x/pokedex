@@ -62,179 +62,108 @@ export function PokemonDetail({ id }: PokemonDetailProps) {
   const genderRatio = species ? formatGenderRate(species.gender_rate) : null;
 
   return (
-    <div className="min-h-screen">
-      {/* Colored Header Section */}
-      <div
-        className={cn(
-          'relative px-4 pb-16 pt-4',
-          TYPE_BG_COLORS[primaryType]
-        )}
-      >
-        {/* Favorite Button */}
-        <div className="mb-4 flex justify-end">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              'text-white hover:bg-white/20',
-              isSelected && 'text-red-300'
-            )}
-            onClick={() => addToCompare(pokemon)}
-          >
-            <Heart className={cn('h-6 w-6', isSelected && 'fill-current')} />
-          </Button>
-        </div>
+    <div className="container mx-auto px-4 py-6 pb-24 max-w-3xl">
+      <Card className="relative overflow-hidden border">
+        {/* Color accent stripe */}
+        <div className={cn('absolute left-0 top-0 bottom-0 w-2', TYPE_BG_COLORS[primaryType])} />
 
-        {/* Pokemon Info */}
-        <div className="mb-6 flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-white">
-              {formatPokemonName(pokemon.name)}
-            </h1>
-            {/* Types and Genus */}
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              {pokemon.types.map((typeSlot) => {
-                const typeName = typeSlot.type.name as PokemonTypeName;
-                return (
-                  <Badge
-                    key={typeName}
-                    className="rounded-full bg-white/25 px-3 py-1 text-xs capitalize text-white"
-                  >
-                    {typeName}
-                  </Badge>
-                );
-              })}
-              {species && (
-                <span className="text-sm text-white/80">
-                  {getEnglishGenus(species)}
-                </span>
-              )}
-            </div>
-          </div>
-          <span className="text-lg font-bold text-white/80">
-            {formatPokemonId(pokemon.id)}
-          </span>
-        </div>
-
-        {/* Pokemon Image */}
-        <div className="relative mx-auto h-48 w-48">
-          <Image
-            src={getPokemonImageUrl(pokemon.id)}
-            alt={pokemon.name}
-            fill
-            className="object-contain drop-shadow-2xl"
-            priority
-          />
-        </div>
-
-        {/* Decorative pokeball */}
-        <div className="pointer-events-none absolute -right-16 top-8 h-64 w-64 rounded-full border-[16px] border-white/10" />
-      </div>
-
-      {/* White Card with Tabs */}
-      <Card className="-mt-8 rounded-t-3xl border-0 shadow-lg">
-        <CardContent className="p-0">
-          <Tabs defaultValue="about" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 rounded-none bg-transparent p-4">
-              <TabsTrigger
-                value="about"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                About
-              </TabsTrigger>
-              <TabsTrigger
-                value="stats"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                Base Stats
-              </TabsTrigger>
-              <TabsTrigger
-                value="evolution"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                Evolution
-              </TabsTrigger>
-              <TabsTrigger
-                value="moves"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                Moves
-              </TabsTrigger>
-            </TabsList>
-
-            {/* About Tab */}
-            <TabsContent value="about" className="px-6 pb-6">
-              <div className="space-y-6">
-                {/* Description */}
+        <CardContent className="p-6 pl-8">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <h1 className="text-2xl font-bold">{formatPokemonName(pokemon.name)}</h1>
+                <span className="text-muted-foreground">{formatPokemonId(pokemon.id)}</span>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                {pokemon.types.map((typeSlot) => {
+                  const typeName = typeSlot.type.name as PokemonTypeName;
+                  return (
+                    <Badge
+                      key={typeName}
+                      className={cn('capitalize text-white', TYPE_COLORS[typeName])}
+                    >
+                      {typeName}
+                    </Badge>
+                  );
+                })}
                 {species && (
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {getEnglishFlavorText(species)}
-                  </p>
+                  <span className="text-muted-foreground text-sm">• {getEnglishGenus(species)}</span>
                 )}
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(isSelected && 'text-red-500')}
+              onClick={() => addToCompare(pokemon)}
+            >
+              <Heart className={cn('h-5 w-5', isSelected && 'fill-current')} />
+            </Button>
+          </div>
 
-                {/* Height & Weight Cards */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-xl bg-muted/50 p-4">
-                    <p className="text-xs text-muted-foreground">Height</p>
-                    <p className="text-sm font-semibold">
-                      {formatHeightImperial(pokemon.height)} ({formatHeight(pokemon.height)})
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-muted/50 p-4">
-                    <p className="text-xs text-muted-foreground">Weight</p>
-                    <p className="text-sm font-semibold">
-                      {formatWeightImperial(pokemon.weight)} ({formatWeight(pokemon.weight)})
-                    </p>
-                  </div>
-                </div>
-
-                {/* Abilities */}
+          {/* Image + Description */}
+          <div className="flex flex-col sm:flex-row gap-6 mb-6">
+            <div className="relative w-32 h-32 flex-shrink-0 bg-muted/30 rounded-2xl mx-auto sm:mx-0">
+              <Image
+                src={getPokemonImageUrl(pokemon.id)}
+                alt={pokemon.name}
+                fill
+                className="object-contain p-2"
+                priority
+              />
+            </div>
+            <div className="flex-1">
+              {species && (
+                <p className="text-sm text-muted-foreground mb-4">
+                  {getEnglishFlavorText(species)}
+                </p>
+              )}
+              <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="mb-2 text-xs text-muted-foreground">Abilities</p>
-                  <p className="text-sm font-semibold">
+                  <p className="text-muted-foreground text-xs">Height</p>
+                  <p className="font-semibold">{formatHeight(pokemon.height)}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Weight</p>
+                  <p className="font-semibold">{formatWeight(pokemon.weight)}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Abilities</p>
+                  <p className="font-semibold text-xs">
                     {pokemon.abilities
-                      .map((a) => formatPokemonName(a.ability.name) + (a.is_hidden ? ' (Hidden)' : ''))
+                      .map((a) => formatPokemonName(a.ability.name) + (a.is_hidden ? ' (H)' : ''))
                       .join(', ')}
                   </p>
                 </div>
-
-                {/* Breeding */}
                 {species && (
-                  <>
-                    <h3 className="font-semibold text-foreground">Breeding</h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Gender</span>
-                        {genderRatio ? (
-                          <div className="flex items-center gap-3">
-                            <span className="text-blue-500">
-                              ♂ {genderRatio.male.toFixed(1)}%
-                            </span>
-                            <span className="text-pink-500">
-                              ♀ {genderRatio.female.toFixed(1)}%
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="font-medium">Genderless</span>
-                        )}
-                      </div>
-                      <InfoRow
-                        label="Egg Groups"
-                        value={species.egg_groups?.length > 0 ? formatEggGroups(species.egg_groups) : 'Unknown'}
-                      />
-                    </div>
-                  </>
+                  <div>
+                    <p className="text-muted-foreground text-xs">Egg Groups</p>
+                    <p className="font-semibold text-xs">
+                      {species.egg_groups?.length > 0 ? formatEggGroups(species.egg_groups) : 'Unknown'}
+                    </p>
+                  </div>
                 )}
               </div>
-            </TabsContent>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <Tabs defaultValue="stats" className="w-full">
+            <TabsList className="w-full justify-start bg-muted/50 p-1 rounded-lg">
+              <TabsTrigger value="stats" className="rounded-md">Stats</TabsTrigger>
+              <TabsTrigger value="evolution" className="rounded-md">Evolution</TabsTrigger>
+              <TabsTrigger value="moves" className="rounded-md">Moves</TabsTrigger>
+              <TabsTrigger value="breeding" className="rounded-md">Breeding</TabsTrigger>
+            </TabsList>
 
             {/* Stats Tab */}
-            <TabsContent value="stats" className="px-6 pb-6">
-              <StatsChart stats={pokemon.stats} />
+            <TabsContent value="stats" className="pt-4">
+              <StatsChart stats={pokemon.stats} type={primaryType} />
             </TabsContent>
 
             {/* Evolution Tab */}
-            <TabsContent value="evolution" className="px-6 pb-6">
+            <TabsContent value="evolution" className="pt-4">
               {evolutionChain ? (
                 <EvolutionChain
                   chain={evolutionChain}
@@ -248,7 +177,7 @@ export function PokemonDetail({ id }: PokemonDetailProps) {
             </TabsContent>
 
             {/* Moves Tab */}
-            <TabsContent value="moves" className="px-6 pb-6">
+            <TabsContent value="moves" className="pt-4">
               <p className="mb-4 text-sm text-muted-foreground">
                 {pokemon.moves.length} moves available
               </p>
@@ -265,21 +194,57 @@ export function PokemonDetail({ id }: PokemonDetailProps) {
                 )}
               </div>
             </TabsContent>
+
+            {/* Breeding Tab */}
+            <TabsContent value="breeding" className="pt-4">
+              {species && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Gender Ratio</span>
+                    {genderRatio ? (
+                      <div className="flex items-center gap-3">
+                        <span className="text-blue-500">♂ {genderRatio.male.toFixed(1)}%</span>
+                        <span className="text-pink-500">♀ {genderRatio.female.toFixed(1)}%</span>
+                      </div>
+                    ) : (
+                      <span className="font-medium">Genderless</span>
+                    )}
+                  </div>
+                  <InfoRow
+                    label="Egg Groups"
+                    value={species.egg_groups?.length > 0 ? formatEggGroups(species.egg_groups) : 'Unknown'}
+                  />
+                  <InfoRow
+                    label="Egg Cycles"
+                    value={species.hatch_counter ? `${species.hatch_counter} cycles` : 'Unknown'}
+                  />
+                  <InfoRow
+                    label="Capture Rate"
+                    value={species.capture_rate ? `${species.capture_rate}` : 'Unknown'}
+                  />
+                </div>
+              )}
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
 
       {/* Navigation Buttons */}
-      <div className="fixed bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+      <div className="fixed bottom-6 left-1/2 flex -translate-x-1/2 gap-2 p-2 rounded-full bg-background/60 backdrop-blur-xl shadow-lg border">
         {pokemon.id > 1 && (
           <Link href={`/pokemon/${pokemon.id - 1}`}>
-            <Button variant="outline" size="icon" className="rounded-full shadow-lg">
+            <Button variant="ghost" size="icon" className="rounded-full">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
         )}
+        <Link href="/pokemon">
+          <Button variant="ghost" className="rounded-full px-4">
+            All Pokemon
+          </Button>
+        </Link>
         <Link href={`/pokemon/${pokemon.id + 1}`}>
-          <Button variant="outline" size="icon" className="rounded-full shadow-lg">
+          <Button variant="ghost" size="icon" className="rounded-full">
             <ArrowLeft className="h-4 w-4 rotate-180" />
           </Button>
         </Link>
@@ -299,32 +264,41 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 function PokemonDetailSkeleton() {
   return (
-    <div className="min-h-screen">
-      {/* Colored Header Skeleton */}
-      <div className="relative bg-muted px-4 pb-16 pt-4">
-        <div className="mb-4 flex items-center justify-between">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <Skeleton className="h-10 w-10 rounded-full" />
-        </div>
-        <div className="mb-6">
-          <Skeleton className="mb-2 h-8 w-40" />
-          <div className="flex gap-2">
-            <Skeleton className="h-6 w-16 rounded-full" />
-            <Skeleton className="h-6 w-16 rounded-full" />
+    <div className="container mx-auto px-4 py-6">
+      <Card className="relative overflow-hidden border">
+        <div className="absolute left-0 top-0 bottom-0 w-2 bg-muted" />
+        <CardContent className="p-6 pl-8">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <Skeleton className="h-8 w-40 mb-2" />
+              <div className="flex gap-2">
+                <Skeleton className="h-6 w-16 rounded-full" />
+                <Skeleton className="h-6 w-16 rounded-full" />
+              </div>
+            </div>
+            <Skeleton className="h-10 w-10 rounded-full" />
           </div>
-        </div>
-        <Skeleton className="mx-auto h-48 w-48 rounded-full" />
-      </div>
 
-      {/* Card Skeleton */}
-      <Card className="-mt-8 rounded-t-3xl border-0">
-        <CardContent className="p-6">
-          <Skeleton className="mb-6 h-10 w-full" />
-          <div className="space-y-4">
-            <Skeleton className="h-6 w-full" />
-            <Skeleton className="h-6 w-full" />
-            <Skeleton className="h-6 w-full" />
-            <Skeleton className="h-6 w-3/4" />
+          {/* Image + Info */}
+          <div className="flex flex-col sm:flex-row gap-6 mb-6">
+            <Skeleton className="w-32 h-32 rounded-2xl mx-auto sm:mx-0" />
+            <div className="flex-1 space-y-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <div className="grid grid-cols-2 gap-4">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <Skeleton className="h-10 w-full rounded-lg mb-4" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
           </div>
         </CardContent>
       </Card>

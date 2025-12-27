@@ -2,101 +2,41 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import type { EvolutionChain as EvolutionChainType, EvolutionChainLink } from '@/lib/types/pokemon';
 import { getPokemonImageUrl, formatPokemonName, extractPokemonId } from '@/lib/api/pokeapi';
 import { cn } from '@/lib/utils';
-import { Card, CardContent } from '@/components/ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 
 interface EvolutionChainProps {
   chain: EvolutionChainType;
   currentPokemonId: number;
 }
 
-interface EvolutionStageProps {
-  link: EvolutionChainLink;
-  currentPokemonId: number;
-}
-
-function EvolutionStage({ link, currentPokemonId }: EvolutionStageProps) {
-  const pokemonId = extractPokemonId(link.species.url);
-  const isCurrent = pokemonId === currentPokemonId;
-
-  // Получаем условие эволюции
+// Flatten evolution chain with triggers
+function flattenEvolutionChain(
+  link: EvolutionChainLink,
+  result: { link: EvolutionChainLink; trigger: string }[] = [],
+  isFirst = true
+): { link: EvolutionChainLink; trigger: string }[] {
   const evolutionDetail = link.evolution_details[0];
-  let evolutionTrigger = '';
+  let trigger = '';
 
   if (evolutionDetail) {
     if (evolutionDetail.min_level) {
-      evolutionTrigger = `Level ${evolutionDetail.min_level}`;
+      trigger = `Lv. ${evolutionDetail.min_level}`;
     } else if (evolutionDetail.item) {
-      evolutionTrigger = formatPokemonName(evolutionDetail.item.name);
+      trigger = formatPokemonName(evolutionDetail.item.name);
     } else if (evolutionDetail.min_happiness) {
-      evolutionTrigger = 'Friendship';
+      trigger = 'Friendship';
     } else if (evolutionDetail.trigger.name === 'trade') {
-      evolutionTrigger = 'Trade';
+      trigger = 'Trade';
     }
   }
 
-  return (
-    <div className="flex flex-col items-center gap-2">
-      {/* Evolution trigger arrow */}
-      {evolutionTrigger && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="flex cursor-help items-center gap-1 text-xs text-muted-foreground">
-              <span className="text-lg">→</span>
-              <span>{evolutionTrigger}</span>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Evolution trigger: {evolutionTrigger}</p>
-          </TooltipContent>
-        </Tooltip>
-      )}
-
-      {/* Pokemon Card */}
-      <Link href={`/pokemon/${pokemonId}`}>
-        <Card
-          className={cn(
-            'transition-all hover:bg-accent',
-            isCurrent && 'ring-2 ring-primary'
-          )}
-        >
-          <CardContent className="flex flex-col items-center gap-2 p-3">
-            <div className="relative h-20 w-20">
-              <Image
-                src={getPokemonImageUrl(pokemonId)}
-                alt={link.species.name}
-                fill
-                className="object-contain"
-                sizes="80px"
-              />
-            </div>
-            <span className="text-sm font-medium capitalize">
-              {formatPokemonName(link.species.name)}
-            </span>
-          </CardContent>
-        </Card>
-      </Link>
-    </div>
-  );
-}
-
-// Рекурсивная функция для получения всех эволюций
-function flattenEvolutionChain(
-  link: EvolutionChainLink,
-  result: EvolutionChainLink[] = []
-): EvolutionChainLink[] {
-  result.push(link);
+  result.push({ link, trigger: isFirst ? '' : trigger });
 
   for (const evolution of link.evolves_to) {
-    flattenEvolutionChain(evolution, result);
+    flattenEvolutionChain(evolution, result, false);
   }
 
   return result;
@@ -114,16 +54,54 @@ export function EvolutionChain({ chain, currentPokemonId }: EvolutionChainProps)
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        {evolutions.map((evo) => (
-          <EvolutionStage
-            key={evo.species.name}
-            link={evo}
-            currentPokemonId={currentPokemonId}
-          />
-        ))}
-      </div>
-    </TooltipProvider>
+    <div className="flex flex-wrap items-center justify-center">
+      {evolutions.map((evo, index) => {
+        const pokemonId = extractPokemonId(evo.link.species.url);
+        const isCurrent = pokemonId === currentPokemonId;
+
+        return (
+          <div key={evo.link.species.name} className="flex items-center">
+            {/* Connector with arrow and trigger */}
+            {index > 0 && (
+              <div className="flex items-center mx-2">
+                <div className="w-4 h-0.5 bg-border" />
+                <div className="flex flex-col items-center px-2">
+                  <ArrowRight className="h-4 w-4 text-primary" />
+                  {evo.trigger && (
+                    <span className="text-[10px] text-muted-foreground mt-0.5 whitespace-nowrap">
+                      {evo.trigger}
+                    </span>
+                  )}
+                </div>
+                <div className="w-4 h-0.5 bg-border" />
+              </div>
+            )}
+
+            {/* Pokemon Card */}
+            <Link href={`/pokemon/${pokemonId}`}>
+              <div
+                className={cn(
+                  'flex flex-col items-center p-3 rounded-2xl border bg-card transition-all hover:bg-accent cursor-pointer',
+                  isCurrent && 'border-primary border-2'
+                )}
+              >
+                <div className="relative h-16 w-16">
+                  <Image
+                    src={getPokemonImageUrl(pokemonId)}
+                    alt={evo.link.species.name}
+                    fill
+                    className="object-contain"
+                    sizes="64px"
+                  />
+                </div>
+                <span className="text-xs font-medium mt-1">
+                  {formatPokemonName(evo.link.species.name)}
+                </span>
+              </div>
+            </Link>
+          </div>
+        );
+      })}
+    </div>
   );
 }
