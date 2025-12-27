@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pokedex
+
+Modern Pokedex application built with Next.js 16, React 19, and TypeScript.
+
+## Tech Stack
+
+- **Framework**: Next.js 16.1.1 (App Router)
+- **UI**: React 19.2.3
+- **Styling**: Tailwind CSS 4 + shadcn/ui + Radix UI
+- **State Management**: Zustand 5 (client state) + TanStack React Query 5 (server state)
+- **Language**: TypeScript 5
+- **Icons**: Lucide React
+
+## Features
+
+- Browse Pokemon with infinite scroll
+- Search Pokemon by name
+- Filter by Pokemon type (18 types)
+- Compare two Pokemon side-by-side
+- View detailed Pokemon information (stats, evolution chain, abilities)
+- **"Who's That Pokemon?" Quiz** - guess Pokemon by silhouette
+- Responsive design (mobile-first)
+- Dark mode support
+
+## Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Home page with Pokemon grid, search, and type filter |
+| `/pokemon/[id]` | Pokemon detail page with stats, evolution, moves |
+| `/quiz` | "Who's That Pokemon?" silhouette guessing game |
+
+## Project Structure
+
+```
+pokedex/
+├── app/                    # Next.js App Router
+│   ├── layout.tsx         # Root layout with providers
+│   ├── page.tsx           # Home page with Pokemon grid
+│   ├── globals.css        # Global styles and CSS variables
+│   ├── pokemon/[id]/      # Dynamic Pokemon detail page
+│   └── quiz/              # Quiz game page
+│
+├── components/
+│   ├── ui/                # shadcn/ui components (Button, Card, Dialog, etc.)
+│   ├── pokemon/           # Pokemon-specific components
+│   ├── quiz/              # Quiz game components
+│   │   ├── pokemon-card.tsx
+│   │   ├── pokemon-grid.tsx
+│   │   ├── pokemon-search.tsx
+│   │   ├── pokemon-detail.tsx
+│   │   ├── compare-dialog.tsx
+│   │   ├── evolution-chain.tsx
+│   │   └── stats-chart.tsx
+│   ├── shared/            # Shared components (Header, TypeFilter)
+│   └── providers/         # Context providers (QueryProvider)
+│
+├── hooks/                  # Custom React hooks
+│   ├── use-pokemon-list.ts  # Infinite query for Pokemon list
+│   ├── use-pokemon.ts       # Single Pokemon data + species + evolution
+│   └── use-debounce.ts      # Debounced callback for search
+│
+├── lib/
+│   ├── api/pokeapi.ts      # PokéAPI integration
+│   ├── types/pokemon.ts    # TypeScript types and color schemes
+│   └── utils.ts            # Utility functions (cn)
+│
+├── stores/                 # Zustand stores
+│   ├── filter-store.ts     # Search and type filter state
+│   ├── compare-store.ts    # Pokemon comparison state
+│   └── quiz-store.ts       # Quiz game state (with localStorage persist)
+│
+└── lib/constants/          # Constants
+    └── generations.ts      # Pokemon generation ranges (Gen 1-9)
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm/yarn/pnpm
+
+### Installation
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses [PokéAPI](https://pokeapi.co/) - a free RESTful Pokemon API.
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Adding shadcn/ui Components
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npx shadcn@latest add <component-name>
+```
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
