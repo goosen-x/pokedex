@@ -2,7 +2,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { getPokemonList, getPokemon, getPokemonSpecies, getEvolutionChain, extractEvolutionChainId } from '@/lib/api/pokeapi';
 import type { Pokemon } from '@/lib/types/pokemon';
 
-const POKEMON_PER_PAGE = 251;
+const POKEMON_PER_PAGE = 24;
 
 interface PokemonPage {
   pokemon: Pokemon[];
