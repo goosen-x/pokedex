@@ -75,11 +75,54 @@ export function QuizGame() {
   const accuracy = totalRounds > 0 ? Math.round((correctAnswers / totalRounds) * 100) : 0;
 
   return (
-    <div className="mx-auto max-w-lg h-[calc(100dvh-64px)] pt-2 pb-14">
-      <Card className="h-full py-0">
-        <CardContent className="h-full p-4 grid grid-rows-[1fr_auto_auto] gap-3">
-          {/* Image area - takes remaining space */}
-          <div className="flex items-center justify-center min-h-0">
+    <div className="mx-auto max-w-lg md:max-w-2xl h-[calc(100dvh-64px)] md:h-auto pt-2 md:pt-8 pb-14 md:pb-4 md:space-y-4">
+      {/* Desktop Stats - показываем сверху над квизом */}
+      <Card className="hidden md:block py-0">
+        <CardContent className="p-4 space-y-4">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-4 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold">{score}</div>
+              <div className="text-xs text-muted-foreground">Score</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold">{streak}</div>
+              <div className="text-xs text-muted-foreground">Streak</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold">{bestStreak}</div>
+              <div className="text-xs text-muted-foreground">Best</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold">{accuracy}%</div>
+              <div className="text-xs text-muted-foreground">Accuracy</div>
+            </div>
+          </div>
+
+          {/* Generation Select */}
+          <div className="flex items-center gap-3">
+            <GenerationSelect
+              value={generation}
+              onChange={handleGenerationChange}
+              disabled={isLoading}
+              className="flex-1 w-auto"
+            />
+            <Button variant="outline" onClick={resetGame} className="flex-1">
+              Reset Game
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="h-full md:h-auto py-0">
+        <CardContent className="h-full md:h-auto p-4 md:p-6 grid grid-rows-[1fr_auto_auto] md:block gap-3 md:space-y-6">
+          {/* Title - only on desktop */}
+          <h2 className="hidden md:block text-2xl font-bold text-center">
+            Who's that Pokémon?
+          </h2>
+
+          {/* Image area - takes remaining space on mobile, fixed on desktop */}
+          <div className="flex items-center justify-center min-h-0 md:py-4">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentPokemon?.id ?? 'loading'}
@@ -87,7 +130,7 @@ export function QuizGame() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="relative h-full max-h-[240px] aspect-square"
+                className="relative h-full max-h-[240px] md:h-72 md:w-72 aspect-square"
               >
                 <PokemonSilhouette
                   pokemonId={currentPokemon?.id ?? null}
@@ -152,68 +195,70 @@ export function QuizGame() {
         </CardContent>
       </Card>
 
-      {/* Floating Stats Button with Drawer */}
-      <Drawer>
-        <DrawerTrigger asChild>
-          <Button
-            variant="secondary"
-            size="sm"
-            className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-full shadow-lg gap-2 z-40"
-          >
-            <Settings className="h-4 w-4" />
-            <span>Score: {score}</span>
-            <span className="text-muted-foreground">|</span>
-            <span>Streak: {streak}</span>
-            <ChevronUp className="h-4 w-4" />
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Quiz Stats & Settings</DrawerTitle>
-          </DrawerHeader>
-          <div className="p-4 pb-8 space-y-6">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-4 gap-4 text-center">
-              <div>
-                <div className="text-2xl font-bold">{score}</div>
-                <div className="text-xs text-muted-foreground">Score</div>
+      {/* Mobile: Floating Stats Button with Drawer */}
+      <div className="md:hidden">
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-full shadow-lg gap-2 z-40"
+            >
+              <Settings className="h-4 w-4" />
+              <span>Score: {score}</span>
+              <span className="text-muted-foreground">|</span>
+              <span>Streak: {streak}</span>
+              <ChevronUp className="h-4 w-4" />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Quiz Stats & Settings</DrawerTitle>
+            </DrawerHeader>
+            <div className="p-4 pb-8 space-y-6">
+              {/* Stats Grid */}
+              <div className="grid grid-cols-4 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold">{score}</div>
+                  <div className="text-xs text-muted-foreground">Score</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">{streak}</div>
+                  <div className="text-xs text-muted-foreground">Streak</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">{bestStreak}</div>
+                  <div className="text-xs text-muted-foreground">Best</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">{accuracy}%</div>
+                  <div className="text-xs text-muted-foreground">Accuracy</div>
+                </div>
               </div>
-              <div>
-                <div className="text-2xl font-bold">{streak}</div>
-                <div className="text-xs text-muted-foreground">Streak</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold">{bestStreak}</div>
-                <div className="text-xs text-muted-foreground">Best</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold">{accuracy}%</div>
-                <div className="text-xs text-muted-foreground">Accuracy</div>
+
+              {/* Progress */}
+              {totalRounds > 0 && (
+                <div className="text-center text-sm text-muted-foreground">
+                  {correctAnswers} correct out of {totalRounds} rounds
+                </div>
+              )}
+
+              {/* Generation Select */}
+              <div className="flex items-center gap-3">
+                <GenerationSelect
+                  value={generation}
+                  onChange={handleGenerationChange}
+                  disabled={isLoading}
+                  className="flex-1 w-auto"
+                />
+                <Button variant="outline" onClick={resetGame} className="flex-1">
+                  Reset Game
+                </Button>
               </div>
             </div>
-
-            {/* Progress */}
-            {totalRounds > 0 && (
-              <div className="text-center text-sm text-muted-foreground">
-                {correctAnswers} correct out of {totalRounds} rounds
-              </div>
-            )}
-
-            {/* Generation Select */}
-            <div className="flex items-center gap-3">
-              <GenerationSelect
-                value={generation}
-                onChange={handleGenerationChange}
-                disabled={isLoading}
-                className="flex-1 w-auto"
-              />
-              <Button variant="outline" onClick={resetGame} className="flex-1">
-                Reset Game
-              </Button>
-            </div>
-          </div>
-        </DrawerContent>
-      </Drawer>
+          </DrawerContent>
+        </Drawer>
+      </div>
     </div>
   );
 }
