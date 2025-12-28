@@ -24,7 +24,7 @@ export function LogoCloud() {
       <p className="text-center text-muted-foreground">
         Meet some legendary Pokemon
       </p>
-      <div className="mt-6 flex items-center justify-center flex-wrap gap-4">
+      <div className="mt-6 flex items-center justify-center flex-wrap gap-3 px-4">
         {pokemonList?.map((pokemon) => {
           const primaryType = pokemon.types[0]?.type.name as PokemonTypeName;
           return (
@@ -32,7 +32,7 @@ export function LogoCloud() {
               key={pokemon.id}
               href={`/pokemon/${pokemon.id}`}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-full transition-transform hover:scale-105",
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-transform hover:scale-105",
                 TYPE_BG_COLORS[primaryType],
                 "text-white"
               )}
@@ -40,10 +40,11 @@ export function LogoCloud() {
               <Image
                 src={getPokemonImageUrl(pokemon.id)}
                 alt={pokemon.name}
-                width={32}
-                height={32}
+                width={24}
+                height={24}
+                className="w-6 h-6"
               />
-              <span className="font-medium text-sm">
+              <span className="font-medium text-xs">
                 {formatPokemonName(pokemon.name)}
               </span>
             </Link>
