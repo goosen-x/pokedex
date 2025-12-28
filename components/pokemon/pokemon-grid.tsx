@@ -70,7 +70,7 @@ export function PokemonGrid() {
   // Начальная загрузка
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {Array.from({ length: 20 }).map((_, i) => (
           <PokemonCardSkeleton key={i} />
         ))}
@@ -107,7 +107,7 @@ export function PokemonGrid() {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {filteredPokemon.map((p) => (
           <PokemonCard key={p.id} pokemon={p} />
         ))}

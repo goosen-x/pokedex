@@ -135,7 +135,7 @@ export function FloatingFilterBar() {
               <SlidersHorizontal className="h-4 w-4" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="rounded-t-3xl max-w-2xl mx-auto px-6">
+          <SheetContent side="bottom" className="rounded-t-3xl max-w-2xl mx-auto px-4 overflow-hidden">
             <SheetHeader className="pb-4">
               <SheetTitle>Filter by Type</SheetTitle>
             </SheetHeader>
@@ -144,13 +144,13 @@ export function FloatingFilterBar() {
               <button
                 onClick={() => handleTypeSelect(null)}
                 className={cn(
-                  'flex flex-col items-center justify-center p-4 rounded-xl transition-all',
+                  'flex flex-col items-center justify-center p-3 rounded-xl transition-all',
                   selectedType === null
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted hover:bg-muted/80'
                 )}
               >
-                <span className="text-2xl mb-1">🌐</span>
+                <span className="text-xl mb-1">🌐</span>
                 <span className="text-xs font-medium">All</span>
               </button>
 
@@ -160,13 +160,13 @@ export function FloatingFilterBar() {
                   key={type}
                   onClick={() => handleTypeSelect(type)}
                   className={cn(
-                    'flex flex-col items-center justify-center p-4 rounded-xl transition-all',
+                    'flex flex-col items-center justify-center p-3 rounded-xl transition-all',
                     selectedType === type
                       ? `${TYPE_BG_COLORS[type]} text-white ring-2 ring-offset-2 ring-offset-background`
                       : 'bg-muted hover:bg-muted/80'
                   )}
                 >
-                  <span className="text-2xl mb-1">{TYPE_ICONS[type]}</span>
+                  <span className="text-xl mb-1">{TYPE_ICONS[type]}</span>
                   <span className="text-xs font-medium capitalize">{type}</span>
                 </button>
               ))}

@@ -9,7 +9,7 @@ import { LogoCloud } from "./logo-cloud";
 
 export function Hero() {
   return (
-    <section className="relative w-full min-h-[calc(100vh-6rem)] flex flex-col items-center justify-center px-6 py-16 overflow-hidden">
+    <section className="relative w-full min-h-[calc(100vh-6rem)] flex flex-col items-center justify-center px-6 py-16 pb-24 sm:pb-16">
       <Badge variant="outline" className="px-4 py-1.5 rounded-full mb-6">
         1000+ Pokemon Available!
       </Badge>
@@ -50,7 +50,7 @@ export function Hero() {
       <motion.img
         src="/pikachu-run.gif"
         alt="Running Pikachu"
-        className="absolute bottom-8 left-0 -z-10 pointer-events-none w-24 h-auto pixelated opacity-70"
+        className="absolute bottom-2 sm:bottom-4 left-0 z-10 pointer-events-none w-20 sm:w-24 h-auto pixelated"
         animate={{
           x: ['-80px', 'calc(100vw + 80px)'],
         }}
