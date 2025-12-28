@@ -41,13 +41,13 @@ export const PokemonCard = memo(function PokemonCard({ pokemon }: PokemonCardPro
 
   return (
     <Link href={`/pokemon/${pokemon.id}`} onMouseEnter={handleMouseEnter}>
-      <div className="group relative flex items-center justify-between overflow-hidden rounded-2xl p-4 bg-card border transition-all hover:shadow-lg hover:scale-[1.02]">
+      <div className="group relative flex items-center justify-between rounded-2xl p-4 pr-2 bg-card border transition-all hover:shadow-lg hover:scale-[1.02]">
         {/* Color accent stripe */}
         <div className={cn('absolute left-0 top-0 bottom-0 w-1.5 rounded-l-2xl', TYPE_BG_COLORS[primaryType])} />
 
         {/* Left side: Name and Types */}
-        <div className="z-10 flex flex-col gap-2 pl-2">
-          <h3 className="text-lg font-bold">
+        <div className="z-10 flex flex-col gap-2 pl-2 min-w-0 flex-1">
+          <h3 className="text-base font-bold truncate">
             {formatPokemonName(pokemon.name)}
           </h3>
 
