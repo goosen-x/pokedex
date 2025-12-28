@@ -25,18 +25,18 @@ export function Hero() {
         and test your knowledge with our interactive quiz game.
       </p>
 
-      <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-        <Link href="/pokemon">
-          <Button size="lg" className="rounded-full px-8">
+      <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto px-4 sm:px-0">
+        <Link href="/pokemon" className="w-full sm:w-auto">
+          <Button size="lg" className="w-full sm:w-auto rounded-full px-8">
             Explore Pokedex
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
-        <Link href="/quiz">
+        <Link href="/quiz" className="w-full sm:w-auto">
           <Button
             size="lg"
             variant="outline"
-            className="rounded-full px-8"
+            className="w-full sm:w-auto rounded-full px-8"
           >
             <Gamepad2 className="mr-2 h-4 w-4" />
             Play Quiz

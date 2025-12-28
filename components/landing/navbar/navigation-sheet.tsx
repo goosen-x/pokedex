@@ -6,10 +6,12 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import { Logo } from "./logo";
 import { NavMenu } from "./nav-menu";
 import Link from "next/link";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export function NavigationSheet() {
   return (
@@ -19,7 +21,10 @@ export function NavigationSheet() {
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left">
+      <SheetContent side="left" className="p-6">
+        <VisuallyHidden>
+          <SheetTitle>Navigation Menu</SheetTitle>
+        </VisuallyHidden>
         <Logo />
         <NavMenu orientation="vertical" className="mt-12" />
         <div className="mt-8 flex flex-col gap-3">
