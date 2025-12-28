@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getPokemon, getPokemonImageUrl, formatPokemonName } from "@/lib/api/pokeapi";
 import { TYPE_BG_COLORS, type PokemonTypeName } from "@/lib/types/pokemon";
@@ -27,10 +28,11 @@ export function LogoCloud() {
         {pokemonList?.map((pokemon) => {
           const primaryType = pokemon.types[0]?.type.name as PokemonTypeName;
           return (
-            <div
+            <Link
               key={pokemon.id}
+              href={`/pokemon/${pokemon.id}`}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-full",
+                "flex items-center gap-2 px-4 py-2 rounded-full transition-transform hover:scale-105",
                 TYPE_BG_COLORS[primaryType],
                 "text-white"
               )}
@@ -44,7 +46,7 @@ export function LogoCloud() {
               <span className="font-medium text-sm">
                 {formatPokemonName(pokemon.name)}
               </span>
-            </div>
+            </Link>
           );
         })}
       </div>

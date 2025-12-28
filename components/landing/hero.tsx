@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { ArrowRight, Gamepad2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,7 @@ import { LogoCloud } from "./logo-cloud";
 
 export function Hero() {
   return (
-    <section className="w-full min-h-[calc(100vh-6rem)] flex flex-col items-center justify-center px-6 py-16">
+    <section className="relative w-full min-h-[calc(100vh-6rem)] flex flex-col items-center justify-center px-6 py-16 overflow-hidden">
       <Badge variant="outline" className="px-4 py-1.5 rounded-full mb-6">
         1000+ Pokemon Available!
       </Badge>
@@ -44,6 +45,22 @@ export function Hero() {
       </div>
 
       <LogoCloud />
+
+      {/* Running Pikachu */}
+      <motion.img
+        src="/pikachu-run.gif"
+        alt="Running Pikachu"
+        className="absolute bottom-8 left-0 pointer-events-none w-24 h-auto pixelated"
+        animate={{
+          x: ['-80px', 'calc(100vw + 80px)'],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: 'linear',
+          repeatDelay: 3,
+        }}
+      />
     </section>
   );
 }

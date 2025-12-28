@@ -138,6 +138,22 @@ export function HeroSection() {
         />
       </motion.div>
 
+      {/* Running Pikachu */}
+      <motion.img
+        src="/pikachu-run.gif"
+        alt="Running Pikachu"
+        className="fixed bottom-20 left-0 z-50 pointer-events-none w-16 h-auto pixelated"
+        animate={{
+          x: ['-80px', 'calc(100vw + 80px)'],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: 'linear',
+          repeatDelay: 2,
+        }}
+      />
+
       {/* Scroll indicator */}
       <motion.div
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
