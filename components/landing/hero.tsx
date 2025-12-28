@@ -50,7 +50,7 @@ export function Hero() {
       <motion.img
         src="/pikachu-run.gif"
         alt="Running Pikachu"
-        className="absolute bottom-8 left-0 pointer-events-none w-24 h-auto pixelated"
+        className="absolute bottom-8 left-0 -z-10 pointer-events-none w-24 h-auto pixelated opacity-70"
         animate={{
           x: ['-80px', 'calc(100vw + 80px)'],
         }}
