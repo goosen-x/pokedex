@@ -9,27 +9,33 @@ interface PokemonSilhouetteProps {
   pokemonId: number | null;
   isRevealed: boolean;
   isLoading?: boolean;
+  compact?: boolean;
 }
 
 export function PokemonSilhouette({
   pokemonId,
   isRevealed,
+  compact = false,
 }: PokemonSilhouetteProps) {
+  const containerSize = compact ? 'h-44 w-44' : 'h-64 w-64';
+  const imageSize = compact ? 160 : 200;
+  const skeletonSize = compact ? 'h-36 w-36' : 'h-48 w-48';
+
   if (pokemonId === null) {
     return (
-      <div className="flex h-64 w-64 items-center justify-center">
-        <Skeleton className="h-48 w-48 rounded-full" />
+      <div className={cn('flex items-center justify-center', containerSize)}>
+        <Skeleton className={cn('rounded-full', skeletonSize)} />
       </div>
     );
   }
 
   return (
-    <div className="relative flex h-64 w-64 items-center justify-center">
+    <div className={cn('relative flex items-center justify-center', containerSize)}>
       <Image
         src={getPokemonImageUrl(pokemonId)}
         alt="Who's that Pokemon?"
-        width={200}
-        height={200}
+        width={imageSize}
+        height={imageSize}
         className={cn(
           'drop-shadow-xl transition-all duration-500',
           !isRevealed && 'brightness-0'

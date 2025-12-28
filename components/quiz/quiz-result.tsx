@@ -13,13 +13,13 @@ export function QuizResult({ pokemon, isCorrect }: QuizResultProps) {
   return (
     <div
       className={cn(
-        'rounded-xl border-2 px-4 py-3 text-center',
+        'rounded-xl border-2 px-4 py-2 text-center',
         isCorrect ? 'border-green-500 bg-green-500/10' : 'border-red-500 bg-red-500/10'
       )}
     >
       <p
         className={cn(
-          'text-lg font-bold',
+          'text-base font-bold mb-0.5',
           isCorrect ? 'text-green-500' : 'text-red-500'
         )}
       >

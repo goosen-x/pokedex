@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowDown } from 'lucide-react';
 import type { EvolutionChain as EvolutionChainType, EvolutionChainLink } from '@/lib/types/pokemon';
 import { getPokemonImageUrl, formatPokemonName, extractPokemonId } from '@/lib/api/pokeapi';
 import { cn } from '@/lib/utils';
@@ -54,26 +54,27 @@ export function EvolutionChain({ chain, currentPokemonId }: EvolutionChainProps)
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-center">
+    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-0">
       {evolutions.map((evo, index) => {
         const pokemonId = extractPokemonId(evo.link.species.url);
         const isCurrent = pokemonId === currentPokemonId;
 
         return (
-          <div key={evo.link.species.name} className="flex items-center">
+          <div key={evo.link.species.name} className="flex flex-col sm:flex-row items-center">
             {/* Connector with arrow and trigger */}
             {index > 0 && (
-              <div className="flex items-center mx-2">
-                <div className="w-4 h-0.5 bg-border" />
-                <div className="flex flex-col items-center px-2">
-                  <ArrowRight className="h-4 w-4 text-primary" />
+              <div className="flex flex-col sm:flex-row items-center my-1 sm:my-0 sm:mx-2">
+                <div className="h-4 w-0.5 sm:h-0.5 sm:w-4 bg-border" />
+                <div className="flex flex-col items-center py-1 sm:py-0 sm:px-2">
+                  <ArrowDown className="h-4 w-4 text-primary sm:hidden" />
+                  <ArrowRight className="h-4 w-4 text-primary hidden sm:block" />
                   {evo.trigger && (
                     <span className="text-[10px] text-muted-foreground mt-0.5 whitespace-nowrap">
                       {evo.trigger}
                     </span>
                   )}
                 </div>
-                <div className="w-4 h-0.5 bg-border" />
+                <div className="h-4 w-0.5 sm:h-0.5 sm:w-4 bg-border" />
               </div>
             )}
 

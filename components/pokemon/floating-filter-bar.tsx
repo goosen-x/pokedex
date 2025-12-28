@@ -12,9 +12,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import { useFilterStore } from '@/stores/filter-store';
 import { useCompareStore } from '@/stores/compare-store';
 import { useDebouncedCallback } from '@/hooks/use-debounce';
+import { useIsMobile } from '@/hooks/use-media-query';
 import { TYPE_COLORS, TYPE_BG_COLORS, POKEMON_TYPES, type PokemonTypeName } from '@/lib/types/pokemon';
 import { cn } from '@/lib/utils';
 
@@ -39,11 +47,54 @@ const TYPE_ICONS: Record<PokemonTypeName, string> = {
   fairy: '✨',
 };
 
+interface FilterContentProps {
+  selectedType: PokemonTypeName | null;
+  onTypeSelect: (type: PokemonTypeName | null) => void;
+}
+
+function FilterContent({ selectedType, onTypeSelect }: FilterContentProps) {
+  return (
+    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pb-8">
+      {/* All Types Button */}
+      <button
+        onClick={() => onTypeSelect(null)}
+        className={cn(
+          'flex flex-col items-center justify-center p-3 rounded-xl transition-all',
+          selectedType === null
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-muted hover:bg-muted/80'
+        )}
+      >
+        <span className="text-xl mb-1">🌐</span>
+        <span className="text-xs font-medium">All</span>
+      </button>
+
+      {/* Type Buttons */}
+      {POKEMON_TYPES.map((type) => (
+        <button
+          key={type}
+          onClick={() => onTypeSelect(type)}
+          className={cn(
+            'flex flex-col items-center justify-center p-3 rounded-xl transition-all',
+            selectedType === type
+              ? `${TYPE_BG_COLORS[type]} text-white ring-2 ring-offset-2 ring-offset-background`
+              : 'bg-muted hover:bg-muted/80'
+          )}
+        >
+          <span className="text-xl mb-1">{TYPE_ICONS[type]}</span>
+          <span className="text-xs font-medium capitalize">{type}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function FloatingFilterBar() {
   const { searchQuery, selectedType, setSearchQuery, setSelectedType } = useFilterStore();
   const { pokemon1, pokemon2, setIsOpen: setCompareOpen } = useCompareStore();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery);
+  const isMobile = useIsMobile();
 
   const compareCount = [pokemon1, pokemon2].filter(Boolean).length;
 
@@ -69,6 +120,16 @@ export function FloatingFilterBar() {
     setLocalSearch('');
     setSearchQuery('');
   };
+
+  const filterButton = (
+    <Button
+      variant={selectedType ? 'default' : 'secondary'}
+      size="icon"
+      className="rounded-full h-10 w-10 flex-shrink-0"
+    >
+      <SlidersHorizontal className="h-4 w-4" />
+    </Button>
+  );
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-xl">
@@ -124,55 +185,40 @@ export function FloatingFilterBar() {
           </Button>
         )}
 
-        {/* Filter Button */}
-        <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant={selectedType ? 'default' : 'secondary'}
-              size="icon"
-              className="rounded-full h-10 w-10 flex-shrink-0"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="rounded-t-3xl max-w-2xl mx-auto px-4 overflow-hidden">
-            <SheetHeader className="pb-4">
-              <SheetTitle>Filter by Type</SheetTitle>
-            </SheetHeader>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pb-8">
-              {/* All Types Button */}
-              <button
-                onClick={() => handleTypeSelect(null)}
-                className={cn(
-                  'flex flex-col items-center justify-center p-3 rounded-xl transition-all',
-                  selectedType === null
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted hover:bg-muted/80'
-                )}
-              >
-                <span className="text-xl mb-1">🌐</span>
-                <span className="text-xs font-medium">All</span>
-              </button>
-
-              {/* Type Buttons */}
-              {POKEMON_TYPES.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => handleTypeSelect(type)}
-                  className={cn(
-                    'flex flex-col items-center justify-center p-3 rounded-xl transition-all',
-                    selectedType === type
-                      ? `${TYPE_BG_COLORS[type]} text-white ring-2 ring-offset-2 ring-offset-background`
-                      : 'bg-muted hover:bg-muted/80'
-                  )}
-                >
-                  <span className="text-xl mb-1">{TYPE_ICONS[type]}</span>
-                  <span className="text-xs font-medium capitalize">{type}</span>
-                </button>
-              ))}
-            </div>
-          </SheetContent>
-        </Sheet>
+        {/* Filter Button - Drawer on mobile, Sheet on desktop */}
+        {isMobile ? (
+          <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+            <DrawerTrigger asChild>
+              {filterButton}
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Filter by Type</DrawerTitle>
+              </DrawerHeader>
+              <div className="px-4">
+                <FilterContent
+                  selectedType={selectedType}
+                  onTypeSelect={handleTypeSelect}
+                />
+              </div>
+            </DrawerContent>
+          </Drawer>
+        ) : (
+          <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+            <SheetTrigger asChild>
+              {filterButton}
+            </SheetTrigger>
+            <SheetContent side="bottom" className="rounded-t-3xl max-w-2xl mx-auto px-4 overflow-hidden">
+              <SheetHeader className="pb-4">
+                <SheetTitle>Filter by Type</SheetTitle>
+              </SheetHeader>
+              <FilterContent
+                selectedType={selectedType}
+                onTypeSelect={handleTypeSelect}
+              />
+            </SheetContent>
+          </Sheet>
+        )}
       </div>
     </div>
   );

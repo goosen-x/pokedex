@@ -10,6 +10,7 @@ interface QuizOptionsProps {
   isRevealed: boolean;
   onSelect: (answer: string) => void;
   disabled?: boolean;
+  compact?: boolean;
 }
 
 export function QuizOptions({
@@ -19,6 +20,7 @@ export function QuizOptions({
   isRevealed,
   onSelect,
   disabled,
+  compact = false,
 }: QuizOptionsProps) {
   const getButtonVariant = (option: string) => {
     if (!isRevealed) return 'outline';
@@ -40,12 +42,15 @@ export function QuizOptions({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className={cn('grid grid-cols-2', compact ? 'gap-2' : 'gap-3')}>
       {options.map((option) => (
         <Button
           key={option}
           variant={getButtonVariant(option)}
-          className={cn('h-12 text-base', getButtonClassName(option))}
+          className={cn(
+            compact ? 'h-10 text-sm' : 'h-12 text-base',
+            getButtonClassName(option)
+          )}
           onClick={() => onSelect(option)}
           disabled={disabled || isRevealed}
         >

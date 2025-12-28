@@ -67,7 +67,7 @@ export function PokemonDetail({ id }: PokemonDetailProps) {
         {/* Color accent stripe */}
         <div className={cn('absolute left-0 top-0 bottom-0 w-2', TYPE_BG_COLORS[primaryType])} />
 
-        <CardContent className="p-6 pl-8">
+        <CardContent className="px-6 pl-8 py-0">
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
             <div>
@@ -97,6 +97,7 @@ export function PokemonDetail({ id }: PokemonDetailProps) {
               size="icon"
               className={cn(isSelected && 'text-red-500')}
               onClick={() => addToCompare(pokemon)}
+              title={isSelected ? 'Added to compare' : 'Add to compare'}
             >
               <Heart className={cn('h-5 w-5', isSelected && 'fill-current')} />
             </Button>
