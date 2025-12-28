@@ -142,7 +142,7 @@ export function QuizGame() {
           </div>
 
           {/* Result */}
-          <div className="min-h-[56px] flex items-center">
+          <div className="min-h-[56px] md:h-[72px] flex items-center">
             <AnimatePresence mode="wait">
               {isRevealed && currentPokemon && isCorrect !== null && (
                 <motion.div
