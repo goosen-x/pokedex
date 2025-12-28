@@ -195,7 +195,7 @@ export function FloatingFilterBar() {
               <DrawerHeader>
                 <DrawerTitle>Filter by Type</DrawerTitle>
               </DrawerHeader>
-              <div className="px-4">
+              <div className="px-4 pb-8 overflow-y-auto max-h-[70vh]">
                 <FilterContent
                   selectedType={selectedType}
                   onTypeSelect={handleTypeSelect}

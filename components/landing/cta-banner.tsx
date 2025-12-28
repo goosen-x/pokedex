@@ -30,20 +30,20 @@ export function CTABanner() {
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/pokemon">
+            <Link href="/pokemon" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="bg-white text-purple-600 hover:bg-white/90 rounded-full px-8"
+                className="w-full sm:w-auto bg-white text-purple-600 hover:bg-white/90 rounded-full px-8"
               >
                 Explore Pokedex
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link href="/quiz">
+            <Link href="/quiz" className="w-full sm:w-auto">
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white/10 rounded-full px-8"
+                className="w-full sm:w-auto border-2 border-white text-white hover:bg-white/10 rounded-full px-8"
               >
                 <Gamepad2 className="mr-2 h-4 w-4" />
                 Play Quiz

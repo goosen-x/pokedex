@@ -8,14 +8,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { getGenerationOptions } from '@/lib/constants/generations';
+import { cn } from '@/lib/utils';
 
 interface GenerationSelectProps {
   value: number | null;
   onChange: (value: number | null) => void;
   disabled?: boolean;
+  className?: string;
 }
 
-export function GenerationSelect({ value, onChange, disabled }: GenerationSelectProps) {
+export function GenerationSelect({ value, onChange, disabled, className }: GenerationSelectProps) {
   const options = getGenerationOptions();
 
   const handleChange = (val: string) => {
@@ -28,7 +30,7 @@ export function GenerationSelect({ value, onChange, disabled }: GenerationSelect
       onValueChange={handleChange}
       disabled={disabled}
     >
-      <SelectTrigger className="w-48">
+      <SelectTrigger className={cn('w-48', className)}>
         <SelectValue placeholder="Select generation" />
       </SelectTrigger>
       <SelectContent>

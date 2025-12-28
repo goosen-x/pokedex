@@ -10,7 +10,7 @@ export default function QuizPage() {
   return (
     <>
       <Header />
-      <div className="container mx-auto px-3 py-4 pb-20">
+      <div className="container mx-auto px-3">
         <QuizGame />
       </div>
     </>

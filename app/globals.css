@@ -121,9 +121,11 @@
   }
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
   /* Offset for anchor links (navbar height + padding) */
   section[id] {

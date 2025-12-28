@@ -75,11 +75,11 @@ export function QuizGame() {
   const accuracy = totalRounds > 0 ? Math.round((correctAnswers / totalRounds) * 100) : 0;
 
   return (
-    <div className="mx-auto max-w-lg">
-      <Card className="py-0">
-        <CardContent className="p-4 space-y-4">
-          {/* Silhouette with crossfade */}
-          <div className="flex justify-center">
+    <div className="mx-auto max-w-lg h-[calc(100dvh-64px)] pt-2 pb-14">
+      <Card className="h-full py-0">
+        <CardContent className="h-full p-4 grid grid-rows-[1fr_auto_auto] gap-3">
+          {/* Image area - takes remaining space */}
+          <div className="flex items-center justify-center min-h-0">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentPokemon?.id ?? 'loading'}
@@ -87,18 +87,19 @@ export function QuizGame() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="relative h-full max-h-[240px] aspect-square"
               >
                 <PokemonSilhouette
                   pokemonId={currentPokemon?.id ?? null}
                   isRevealed={isRevealed}
-                  compact
+                  fullHeight
                 />
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Result - fixed height to prevent layout shift */}
-          <div className="h-[48px] flex items-center justify-center">
+          {/* Result */}
+          <div className="min-h-[56px] flex items-center">
             <AnimatePresence mode="wait">
               {isRevealed && currentPokemon && isCorrect !== null && (
                 <motion.div
@@ -115,37 +116,39 @@ export function QuizGame() {
             </AnimatePresence>
           </div>
 
-          {/* Options with crossfade */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={options.join(',')}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-            >
-              <QuizOptions
-                options={options}
-                selectedAnswer={selectedAnswer}
-                correctAnswer={correctName}
-                isRevealed={isRevealed}
-                onSelect={selectAnswer}
-                disabled={isLoading || options.length === 0}
-                compact
-              />
-            </motion.div>
-          </AnimatePresence>
+          {/* Options */}
+          <div className="space-y-3">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={options.join(',')}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+              >
+                <QuizOptions
+                  options={options}
+                  selectedAnswer={selectedAnswer}
+                  correctAnswer={correctName}
+                  isRevealed={isRevealed}
+                  onSelect={selectAnswer}
+                  disabled={isLoading || options.length === 0}
+                  compact
+                />
+              </motion.div>
+            </AnimatePresence>
 
-          {/* Next Button */}
-          <Button
-            className={cn(
-              'w-full h-12 transition-opacity duration-200',
-              isRevealed ? 'opacity-100' : 'opacity-0 pointer-events-none'
-            )}
-            onClick={handleNextRound}
-          >
-            Next Pokemon
-          </Button>
+            {/* Next Button */}
+            <Button
+              className={cn(
+                'w-full h-11 transition-opacity duration-200',
+                isRevealed ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              )}
+              onClick={handleNextRound}
+            >
+              Next Pokemon
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -202,8 +205,9 @@ export function QuizGame() {
                 value={generation}
                 onChange={handleGenerationChange}
                 disabled={isLoading}
+                className="flex-1 w-auto"
               />
-              <Button variant="outline" onClick={resetGame} className="flex-shrink-0">
+              <Button variant="outline" onClick={resetGame} className="flex-1">
                 Reset Game
               </Button>
             </div>
