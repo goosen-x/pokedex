@@ -3,9 +3,23 @@ import type {
   PokemonListResponse,
   PokemonSpecies,
   EvolutionChain,
+  PokemonTypeName,
 } from '@/lib/types/pokemon';
 
 const BASE_URL = 'https://pokeapi.co/api/v2';
+
+/**
+ * Ответ от API /type/{type}
+ */
+interface TypeResponse {
+  pokemon: Array<{
+    pokemon: {
+      name: string;
+      url: string;
+    };
+    slot: number;
+  }>;
+}
 
 /**
  * Получить список покемонов с пагинацией
@@ -36,6 +50,41 @@ export async function getPokemon(idOrName: string | number): Promise<Pokemon> {
   }
 
   return response.json();
+}
+
+/**
+ * Получить список покемонов по типу
+ * Возвращает список имен покемонов данного типа, отсортированный по ID
+ */
+export async function getPokemonByType(type: PokemonTypeName): Promise<string[]> {
+  const response = await fetch(`${BASE_URL}/type/${type}`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch pokemon by type: ${type}`);
+  }
+
+  const data: TypeResponse = await response.json();
+
+  // Извлекаем имена и сортируем по ID покемона
+  const pokemonList = data.pokemon
+    .map((entry) => {
+      const id = extractPokemonIdFromUrl(entry.pokemon.url);
+      return { name: entry.pokemon.name, id };
+    })
+    // Фильтруем только оригинальных покемонов (ID <= 1025, исключаем формы)
+    .filter((p) => p.id <= 1025)
+    .sort((a, b) => a.id - b.id)
+    .map((p) => p.name);
+
+  return pokemonList;
+}
+
+/**
+ * Извлечь ID покемона из URL pokemon endpoint
+ */
+export function extractPokemonIdFromUrl(url: string): number {
+  const match = url.match(/pokemon\/(\d+)/);
+  return match ? parseInt(match[1], 10) : 0;
 }
 
 /**

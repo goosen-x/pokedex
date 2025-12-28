@@ -14,7 +14,7 @@ const footerLinks = [
 
 const socialLinks = [
   { href: "https://twitter.com", icon: Twitter, label: "Twitter" },
-  { href: "https://github.com", icon: Github, label: "GitHub" },
+  { href: "https://github.com/goosen-x/pokedex", icon: Github, label: "GitHub" },
 ];
 
 export function Footer() {

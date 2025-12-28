@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/landing/navbar";
+import { Header } from "@/components/shared/header";
 import { Hero } from "@/components/landing/hero";
 import { Features } from "@/components/landing/features";
 import { PokemonShowcase } from "@/components/landing/pokemon-showcase";
@@ -16,7 +16,7 @@ export const metadata = {
 export default function LandingPage() {
   return (
     <>
-      <Navbar />
+      <Header variant="landing" />
       <main className="pt-20">
         <Hero />
         <Features />

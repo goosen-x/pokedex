@@ -2,42 +2,43 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { usePokemonList } from '@/hooks/use-pokemon-list';
+import { usePokemonByType } from '@/hooks/use-pokemon-by-type';
 import { useFilterStore } from '@/stores/filter-store';
 import { PokemonCard } from './pokemon-card';
 import { PokemonCardSkeleton } from './pokemon-card-skeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import type { PokemonTypeName } from '@/lib/types/pokemon';
 
 export function PokemonGrid() {
+  // Загрузка всех покемонов (infinite scroll)
+  const allPokemonQuery = usePokemonList();
+
+  const { searchQuery, selectedType } = useFilterStore();
+
+  // Загрузка покемонов по типу (API фильтрация)
+  const typePokemonQuery = usePokemonByType(selectedType);
+
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Определяем какой набор данных использовать
+  const isTypeFiltered = !!selectedType;
+  const activeQuery = isTypeFiltered ? typePokemonQuery : allPokemonQuery;
+
   const {
-    pokemon,
+    pokemon: rawPokemon,
     isLoading,
     isError,
     error,
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = usePokemonList();
+  } = activeQuery;
 
-  const { searchQuery, selectedType } = useFilterStore();
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-
-  // Фильтрация покемонов
-  const filteredPokemon = pokemon.filter((p) => {
-    // Фильтр по имени
-    if (searchQuery && !p.name.includes(searchQuery)) {
+  // Применяем поиск по имени (работает поверх любого набора данных)
+  const filteredPokemon = rawPokemon.filter((p) => {
+    if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
-
-    // Фильтр по типу
-    if (selectedType) {
-      const hasType = p.types.some(
-        (t) => t.type.name === selectedType
-      );
-      if (!hasType) return false;
-    }
-
     return true;
   });
 
@@ -120,7 +121,7 @@ export function PokemonGrid() {
       </div>
 
       {/* Триггер для infinite scroll */}
-      {hasNextPage && !selectedType && !searchQuery && (
+      {hasNextPage && (
         <div ref={loadMoreRef} className="flex justify-center py-8">
           <Button
             variant="outline"
